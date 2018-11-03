@@ -5,3 +5,4 @@ SpeechRecognition
 pyautogui
 Xlib
 sklearn
+string

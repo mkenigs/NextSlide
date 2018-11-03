@@ -4,6 +4,7 @@ import re
 import sys
 import pyautogui
 import Powerpoint2Text
+import string
 
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.feature_extraction.text import TfidfVectorizer
@@ -153,10 +154,17 @@ class Processor:
             self.startOfSlideCues.append(space.join(element.split(" ")[:4]))
             self.endOfSlideCues.append(space.join(element.split(" ")[-4:]))
 
-    def similar(endCues, transcript):
+    def similar(self, endCues, transcript):
         listOfEndCues = [w for w in re.split('\W', endCues) if w]
         listTranscript = transcript.split(" ")
         count = 0
         for i, j in zip(listOfEndCues, listTranscript):
             if i == j: count+=1
         return (count>=len(endCues)*0.7)
+
+    def unPunctuatedAndLower(self, str):
+        exclude = set(string.punctuation)
+        s = "".join(ch.lower() for ch in str if ch not in exclude)
+        return s
+
+
