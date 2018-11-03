@@ -14,16 +14,21 @@ class Processor:
     commands = {"exit": "", "next slide":"right", "previous slide":"left"}
     def __init__(self, responses, powerpoint):
         self.responses=responses
-        textOfPPT=Powerpoint2Text.parsePPTX(powerpoint)
-        print(textOfPPT)
-        # self.numberSlides=len(textOfPPT)
-        self.numberSlides=4
+        self.textOfPPT=Powerpoint2Text.parsePPTX(powerpoint)
+        print(self.textOfPPT)
+        self.numberSlides=len(self.textOfPPT)
         self.currentSlide=0
 
-        #self.endOfSlideCues=self.getEndCues(textOfPPT)
-        #self.startOfSlideCues=self.getStartCues(textOfPPT)
-        self.endOfSlideCues = ["end of first", "second end second", "end of third third", "fourth end fourth"]
-        self.startOfSlideCues = ["the beginning", "start of second", "start of third", "start of fourth"]
+        self.endOfSlideCues=[]
+        self.startOfSlideCues=[]
+
+        # self.endOfSlideCues=self.getEndCues(textOfPPT)
+        # self.startOfSlideCues=self.getStartCues(self.textOfPPT)
+
+        self.setStartAndEndCues()
+
+        # self.endOfSlideCues = ["end of first", "second end second", "end of third third", "fourth end fourth"]
+        # self.startOfSlideCues = ["the beginning", "start of second", "start of third", "start of fourth"]
         self.unmatchedFinals = ""
         self.BREAK=False
 
@@ -138,8 +143,7 @@ class Processor:
 
                 # num_chars_printed = 0
 
-    def getEndCues(self):
-        pass
-
-    def getStartCues(self):
-        pass
+    def setStartAndEndCues(self):
+        for element in self.textOfPPT:
+            self.startOfSlideCues.append(element[:len(element)/2])
+            self.endOfSlideCues.append(element[len(element/2):])
