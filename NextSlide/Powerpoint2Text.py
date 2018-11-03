@@ -4,14 +4,18 @@ import os
 import glob
 import re
 
+#only function you should call
+#parameter file- string of the file name
+#returns list of strings where list[0] is all the text on slide 1
 def parsePPTX(file):
     setup(file)
     temp = parseXML()
     cleanup(file)
     return temp
 
-
-
+# Sets up the powerpoint to be parsed by copying the file and making it a .zip
+# Parameter file- string of file name
+# return - void
 def setup(file):
     zfile = (os.path.splitext(file)[0] + ".zip")
     shutil.copyfile(file, zfile)
@@ -19,7 +23,8 @@ def setup(file):
         zip.extractall()
 
 
-
+# locates the strings within a powerpoint
+# returns - void
 def parseXML():
     files = glob.glob('./ppt/slides/*.xml')
     files = natural_sort(files)
@@ -34,7 +39,7 @@ def parseXML():
         text.append(t)
     print(text)
 
-
+# deletes temp files
 def cleanup(file):
     os.remove(os.path.splitext(file)[0] + ".zip")
     shutil.rmtree("ppt")
