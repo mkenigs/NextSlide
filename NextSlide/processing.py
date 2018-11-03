@@ -2,6 +2,8 @@ import transcription
 import re
 import sys
 
+cues = ["first", "second", "third", "fourth", "exit"]
+
 def listen_print_loop(responses):
     """Iterates through server responses and prints them.
     The responses passed is a generator that will block until a response
@@ -14,7 +16,8 @@ def listen_print_loop(responses):
     the next result to overwrite it, until the response is a final one. For the
     final one, print a newline to preserve the finalized transcription.
     """
-    num_chars_printed = 0
+    # num_chars_printed = 0
+    BREAK = False
     for response in responses:
         if not response.results:
             continue
@@ -34,22 +37,24 @@ def listen_print_loop(responses):
         #
         # If the previous result was longer than this one, we need to print
         # some extra spaces to overwrite the previous result
-        overwrite_chars = ' ' * (num_chars_printed - len(transcript))
+        # overwrite_chars = ' ' * (num_chars_printed - len(transcript))
 
         if not result.is_final:
-            sys.stdout.write(transcript + overwrite_chars + '\r')
-            sys.stdout.flush()
-
-            num_chars_printed = len(transcript)
+            # sys.stdout.write(transcript + overwrite_chars + '\r')
+            # sys.stdout.flush()
+            #
+            # num_chars_printed = len(transcript)
+            pass
 
         else:
-            print(transcript + overwrite_chars)
-
             # Exit recognition if any of the transcribed phrases could be
             # one of our keywords.
-            if re.search(r'\b(exit|quit)\b', transcript, re.I):
-                print('Exiting..')
-                break
+            for cue in cues:
+                if re.search(r'\b(%s)\b' % (cue), transcript, re.I):
+                    print("calling %s method" % (cue))
+                    if cue == "exit":
+                        BREAK=True
+        if BREAK: break
 
-            num_chars_printed = 0
+            # num_chars_printed = 0
 
