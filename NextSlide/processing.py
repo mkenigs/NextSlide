@@ -59,19 +59,16 @@ def parseForCue(transcript):
 
     for i in range(len(startOfSlideCues)):
         if re.search(r'\b(%s)\b' % startOfSlideCues[i], transcript, re.I):
-            print("calling")
             goToSlide(i)
             return False
 
     return False
 
 def  goToSlide(slide):
-    print("go to slide %i" % slide)
     difference = currentSlide-slide
     if difference==0:
         return
     command = "previous slide" if difference>0 else "next slide"
-    print(command)
     for i in range(abs(difference)):
         callCommand(command)
 
