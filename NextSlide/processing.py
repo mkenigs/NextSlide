@@ -26,7 +26,8 @@ class Processor:
         # self.startOfSlideCues=self.getStartCues(self.textOfPPT)
 
         self.setStartAndEndCues()
-
+        print(self.startOfSlideCues)
+        print(self.endOfSlideCues)
         # self.endOfSlideCues = ["end of first", "second end second", "end of third third", "fourth end fourth"]
         # self.startOfSlideCues = ["the beginning", "start of second", "start of third", "start of fourth"]
         self.unmatchedFinals = ""
@@ -73,7 +74,7 @@ class Processor:
             return True
 
         for i in range(len(self.startOfSlideCues)):
-            if re.search(r'\b(%s)\b' % self.startOfSlideCues[i], self.unmatchedFinals+transcript, re.I):
+            if self.startOfSlideCues[i]!=" " and re.search(r'\b(%s)\b' % self.startOfSlideCues[i], self.unmatchedFinals+transcript, re.I):
                 self.goToSlide(i)
                 return True
 
@@ -124,7 +125,6 @@ class Processor:
             # some extra spaces to overwrite the previous result
             # overwrite_chars = ' ' * (num_chars_printed - len(transcript))
 
-
             if result.is_final:
                 if keeplooking: #haven't found a command yet
                     keeplooking = not self.parseForCue(transcript)
@@ -145,5 +145,6 @@ class Processor:
 
     def setStartAndEndCues(self):
         for element in self.textOfPPT:
-            self.startOfSlideCues.append(element[:len(element)/2])
-            self.endOfSlideCues.append(element[len(element/2):])
+            space = " "
+            self.startOfSlideCues.append(space.join(element.split(" ")[:2]))
+            self.endOfSlideCues.append(space.join(element.split(" ")[-2:]))
