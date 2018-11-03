@@ -1,8 +1,28 @@
 import transcription
+import itertools
 import re
 import sys
 
-cues = ["first", "second", "third", "fourth", "exit"]
+voiceCommands = ["next slide", "previous slide"]
+endOfSlideCues = ["end of first", "second end second"]
+
+currentSlide=1
+
+def callCommand:
+    pass
+
+def parseForCue(transcript):
+    for cue in voiceCommands:
+        if re.search(r'\b(%s)\b' % (cue), transcript, re.I):
+            callCommand(cue)
+            if cue == "exit":
+                return True
+            else:
+                return False
+    if re.search(r'\b(%s)\b' % (endOfSlideCues[currentSlide]), transcript, re.I):
+        callCommand("next slide")
+    return False
+
 
 def listen_print_loop(responses):
     """Iterates through server responses and prints them.
@@ -49,11 +69,8 @@ def listen_print_loop(responses):
         else:
             # Exit recognition if any of the transcribed phrases could be
             # one of our keywords.
-            for cue in cues:
-                if re.search(r'\b(%s)\b' % (cue), transcript, re.I):
-                    print("calling %s method" % (cue))
-                    if cue == "exit":
-                        BREAK=True
+            BREAK = parseForCue(transcript)
+
         if BREAK: break
 
             # num_chars_printed = 0
