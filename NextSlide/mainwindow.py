@@ -1,5 +1,5 @@
 import sys
-import processing
+import transcription
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 class Window(QtWidgets.QMainWindow):
@@ -12,7 +12,7 @@ class Window(QtWidgets.QMainWindow):
 
 
 if __name__ == '__main__':
-   processing.main()
+   transcription.main()
 	# app = QtWidgets.QApplication(sys.argv)
 	# GUI = Window()
 	# sys.exit(app.exec_())
