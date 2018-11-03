@@ -107,7 +107,7 @@ class MicrophoneStream(object):
 
 
 
-def main():
+def main(powerpoint):
     # See http://g.co/cloud/speech/docs/languages
     # for a list of supported languages.
     language_code = 'en-US'  # a BCP-47 language tag
@@ -129,9 +129,10 @@ def main():
         responses = client.streaming_recognize(streaming_config, requests)
 
         # Now, put the transcription responses to use.
-        processing.listen_print_loop(responses)
+        myProcessor = processing.Processor(responses, powerpoint)
+        myProcessor.listen_print_loop()
 
 
 if __name__ == '__main__':
-    main()
+    main("blank")
 # [END speech_transcribe_streaming_mic]
