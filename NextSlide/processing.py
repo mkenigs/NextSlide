@@ -4,12 +4,31 @@ import re
 import sys
 import pyautogui
 
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
+from sklearn.metrics.pairwise import cosine_similarity
+
 commands = {"exit": "", "next slide":"right", "previous slide":"left"}
 endOfSlideCues = ["end of first", "second end second", "", ""]
 startOfSlideCues = ["the beginning", "start of second", "start of third", "start of fourth"]
 
 currentSlide=0
 numberSlides=4
+
+def weighter(input):
+    documents = input
+
+    #vectorizer fits our powerpoint / document
+    tfidf_vectorizer = TfidfVectorizer()
+    tfidf_matrix = tfidf_vectorizer.fit_transform(documents)
+
+    #gives matrix of simlarity
+    cosine_similarity(tfidf_matrix[0:1], tfidf_matrix)
+
+
+
+
 
 def loadOfSlideCues(input):
     for slide in input:
