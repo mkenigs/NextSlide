@@ -3,3 +3,5 @@ google-cloud
 google-cloud-speech
 SpeechRecognition
 PyQt5
+pyautogui
+Xlib

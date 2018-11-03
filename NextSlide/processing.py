@@ -5,9 +5,11 @@ import sys
 import pyautogui
 
 commands = {"exit": "", "next slide":"right", "previous slide":"left"}
-endOfSlideCues = ["end of first", "second end second"]
+endOfSlideCues = ["end of first", "second end second", "", ""]
+startOfSlideCues = ["the beginning", "start of second", "start of third", "start of fourth"]
 
-currentSlide=1
+currentSlide=0
+numberSlides=4
 
 def loadOfSlideCues(input):
     for slide in input:
@@ -15,21 +17,44 @@ def loadOfSlideCues(input):
 
 
 def callCommand(command):
-    pyautogui.typewrite(commands[command])
-    ++currentSlide
+    global currentSlide
+    if (command=="next slide" and currentSlide==numberSlides-1) or (command=="previous slide" and currentSlide==0):
+        return
+    pyautogui.press(commands[command])
+    if commands[command] == "right": currentSlide+=1
+    if commands[command] == "left": currentSlide-=1
+    print("Slide: %i" % currentSlide)
 
 def parseForCue(transcript):
+
     for cue in commands:
-        if re.search(r'\b(%s)\b' % (cue), transcript, re.I):
+        if re.search(r'\b(%s)\b' % cue, transcript, re.I):
             if cue == "exit":
                 return True
             callCommand(cue)
+            return False #only want to run one command
 
-        else:
-            return False
     if re.search(r'\b(%s)\b' % (endOfSlideCues[currentSlide]), transcript, re.I):
         callCommand("next slide") # should be in commands
+        return False
+
+    for i in range(len(startOfSlideCues)):
+        if re.search(r'\b(%s)\b' % startOfSlideCues[i], transcript, re.I):
+            print("calling")
+            goToSlide(i)
+            return False
+
     return False
+
+def  goToSlide(slide):
+    print("go to slide %i" % slide)
+    difference = currentSlide-slide
+    if difference==0:
+        return
+    command = "previous slide" if difference>0 else "next slide"
+    print(command)
+    for i in range(abs(difference)):
+        callCommand(command)
 
 
 def listen_print_loop(responses):
