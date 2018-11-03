@@ -16,6 +16,9 @@ startOfSlideCues = ["the beginning", "start of second", "start of third", "start
 currentSlide=0
 numberSlides=4
 
+unmatchedFinals = ""
+BREAK = False
+
 def weighter(input):
     documents = input
 
@@ -45,22 +48,23 @@ def callCommand(command):
     print("Slide: %i" % currentSlide)
 
 def parseForCue(transcript):
-
     for cue in commands:
-        if re.search(r'\b(%s)\b' % cue, transcript, re.I):
+        if re.search(r'\b(%s)\b' % cue, unmatchedFinals+transcript, re.I):
             if cue == "exit":
+                global BREAK
+                BREAK=True
                 return True
             callCommand(cue)
-            return False #only want to run one command
+            return True #only want to run one command
 
-    if re.search(r'\b(%s)\b' % (endOfSlideCues[currentSlide]), transcript, re.I):
+    if re.search(r'\b(%s)\b' % (endOfSlideCues[currentSlide]), unmatchedFinals+transcript, re.I):
         callCommand("next slide") # should be in commands
-        return False
+        return True
 
     for i in range(len(startOfSlideCues)):
-        if re.search(r'\b(%s)\b' % startOfSlideCues[i], transcript, re.I):
+        if re.search(r'\b(%s)\b' % startOfSlideCues[i], unmatchedFinals+transcript, re.I):
             goToSlide(i)
-            return False
+            return True
 
     return False
 
@@ -86,7 +90,8 @@ def listen_print_loop(responses):
     final one, print a newline to preserve the finalized transcription.
     """
     # num_chars_printed = 0
-    BREAK = False
+
+    keeplooking = True
     for response in responses:
         if not response.results:
             continue
@@ -108,19 +113,23 @@ def listen_print_loop(responses):
         # some extra spaces to overwrite the previous result
         # overwrite_chars = ' ' * (num_chars_printed - len(transcript))
 
-        if not result.is_final:
-            # sys.stdout.write(transcript + overwrite_chars + '\r')
-            # sys.stdout.flush()
-            #
-            # num_chars_printed = len(transcript)
-            pass
+        global unmatchedFinals
 
-        else:
-            # Exit recognition if any of the transcribed phrases could be
-            # one of our keywords.
-            BREAK = parseForCue(transcript)
+        if result.is_final:
+            if keeplooking: #haven't found a command yet
+                keeplooking = not parseForCue(transcript)
+                if not keeplooking: #found a command
+                    unmatchedFinals=""
+            if keeplooking: unmatchedFinals+=transcript #if we still haven't found a command, add to unmatched
+            keeplooking=True
+
+        elif keeplooking:
+            keeplooking = not parseForCue(transcript) # if something not found, keeplooking
+            if not keeplooking:
+                unmatchedFinals=""
 
         if BREAK: break
+
 
             # num_chars_printed = 0
 
