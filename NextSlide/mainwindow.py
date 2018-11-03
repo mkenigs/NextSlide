@@ -1,29 +1,50 @@
-import tkinter as tk
+from tkinter import *
+from tkinter.filedialog import askopenfilename
 
 
-class App(tk.Frame):
-    def __init__(self, master=None):
-        super().__init__(master)
-        self.pack(padx=135, pady=115)
-        self.photo = tk.PhotoImage(file="play_black.gif")
-        self.play = tk.Button(self)
-        self.play["text"] = "Start Listening"
-        #self.play["image"] = self.photo
-        self.play["fg"] = "red"
-        self.play["height"] = 5
-        self.play["width"] = 20
-        self.play["command"] = self.run
-        self.play.bind("<Enter>", self.color)
-        self.play.pack(side='top')
-
-    def run(self):
-        print("hi there, everyone!")
+def read(input):
+    text = input
 
 
-    def color(self, event):
-        event.widget["activeforeground"] = "blue"
+def startListening():
+    play['image'] = pause
 
 
-root = App()
-root.master.title("NextSlide")
-root.mainloop()
+def stopListening():
+    play['image'] = start
+
+
+def run():
+    if play['image'] == start.name:
+        startListening()
+    else:
+        stopListening()
+        text1['text'] = 'Press play to start'
+
+
+def getFile():
+    filename = askopenfilename()
+    if filename:
+        pickFile['text'] = filename[filename.rfind('/') + 1:]
+        stopListening()
+        print('hello world this is a \n test')
+        print("hello world this is another \n test")
+
+
+master = Tk()
+master.title('NextSlide')
+master.geometry('200x160')
+master.resizable(0, 0)
+
+text1 = Label(text='Press play to start')
+text1.pack(padx=10, pady=10)
+
+start = PhotoImage(file='Play.png')
+pause = PhotoImage(file='Pause.png')
+play = Button(image=start, height=50, width=50, command=run)
+play.pack(padx=10, pady=10)
+
+pickFile = Button(text='Please select a file', height=50, width=50, command=getFile)
+pickFile.pack(padx=10, pady=10)
+
+mainloop()

@@ -43,6 +43,7 @@ CHUNK = int(RATE / 10)  # 100ms
 
 class MicrophoneStream(object):
     """Opens a recording stream as a generator yielding the audio chunks."""
+
     def __init__(self, rate, chunk):
         self._rate = rate
         self._chunk = chunk
@@ -133,8 +134,10 @@ class Transcriber:
 
             # Now, put the transcription responses to use.
             self.myProcessor.listen_print_loop(responses)
+
     def stop(self):
-        self.myProcessor.BREAK=True
+        self.myProcessor.BREAK = True
+
 
 if __name__ == '__main__':
     myTranscriber = Transcriber("../Computer Crimes.pptx")

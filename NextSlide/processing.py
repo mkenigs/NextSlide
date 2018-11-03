@@ -11,16 +11,18 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.metrics.pairwise import cosine_similarity
 
-class Processor:
-    commands = {"exit": "", "next slide":"right", "previous slide":"left"}
-    def __init__(self, powerpoint):
-        self.textOfPPT=Powerpoint2Text.parsePPTX(powerpoint)
-        print(self.textOfPPT)
-        self.numberSlides=len(self.textOfPPT)
-        self.currentSlide=0
 
-        self.endOfSlideCues=[]
-        self.startOfSlideCues=[]
+class Processor:
+    commands = {"exit": "", "next slide": "right", "previous slide": "left"}
+
+    def __init__(self, powerpoint):
+        self.textOfPPT = Powerpoint2Text.parsePPTX(powerpoint)
+        print(self.textOfPPT)
+        self.numberSlides = len(self.textOfPPT)
+        self.currentSlide = 0
+
+        self.endOfSlideCues = []
+        self.startOfSlideCues = []
 
         # self.endOfSlideCues=self.getEndCues(textOfPPT)
         # self.startOfSlideCues=self.getStartCues(self.textOfPPT)
@@ -31,9 +33,7 @@ class Processor:
         # self.endOfSlideCues = ["end of first", "second end second", "end of third third", "fourth end fourth"]
         # self.startOfSlideCues = ["the beginning", "start of second", "start of third", "start of fourth"]
         self.unmatchedFinals = ""
-        self.BREAK=False
-
-
+        self.BREAK = False
 
     def weighter(currentPowerPointContent, stringOfWordsSaid):
         if type(stringOfWordsSaid) is str: stringOfWordsSaid = [stringOfWordsSaid]
@@ -41,58 +41,54 @@ class Processor:
         for strs in stringOfWordsSaid:
             documents.append(strs)
 
-
-        #vectorizer fits our powerpoint / document
+        # vectorizer fits our powerpoint / document
         tfidf_vectorizer = TfidfVectorizer()
         tfidf_matrix = tfidf_vectorizer.fit_transform(documents)
 
-        #gives matrix of simlarity
+        # gives matrix of simlarity
         similarityResult = cosine_similarity(tfidf_matrix[0:1], tfidf_matrix)[0]
-        return (sum(similarityResult)-1)/(len(similarityResult)-1)
-
-
+        return (sum(similarityResult) - 1) / (len(similarityResult) - 1)
 
     def callCommand(self, command):
-        if (command=="next slide" and self.currentSlide==self.numberSlides-1) or (command=="previous slide" and self.currentSlide==0):
+        if (command == "next slide" and self.currentSlide == self.numberSlides - 1) or (command == "previous slide" and self.currentSlide == 0):
             return
         pyautogui.press(self.commands[command])
-        if self.commands[command] == "right": self.currentSlide+=1
-        if self.commands[command] == "left": self.currentSlide-=1
+        if self.commands[command] == "right": self.currentSlide += 1
+        if self.commands[command] == "left": self.currentSlide -= 1
         print("Slide: %i" % self.currentSlide)
 
     def parseForCue(self, transcript):
         for cue in self.commands:
-            if re.search(r'\b(%s)\b' % cue, self.unmatchedFinals+transcript, re.I):
+            if re.search(r'\b(%s)\b' % cue, self.unmatchedFinals + transcript, re.I):
                 if cue == "exit":
-                    self.BREAK=True
+                    self.BREAK = True
                     return True
                 self.callCommand(cue)
-                return True #only want to run one command
+                return True  # only want to run one command
 
         space = " "
-        lastFour=space.join((self.unmatchedFinals+transcript).split(" ")[:4])
+        lastFour = space.join((self.unmatchedFinals + transcript).split(" ")[:4])
 
         if self.similar(self.endOfSlideCues[self.currentSlide], lastFour):
-        # if re.search(r'\b(%s)\b' % (self.endOfSlideCues[self.currentSlide]), self.unmatchedFinals+transcript, re.I):
-            self.callCommand("next slide") # should be in commands
+            # if re.search(r'\b(%s)\b' % (self.endOfSlideCues[self.currentSlide]), self.unmatchedFinals+transcript, re.I):
+            self.callCommand("next slide")  # should be in commands
             return True
 
-        for i in range(len(self.startOfSlideCues)): #todo edge cases
+        for i in range(len(self.startOfSlideCues)):  # todo edge cases
             if self.similar(self.startOfSlideCues[i], lastFour):
-            # if self.startOfSlideCues[i]!=" " and re.search(r'\b(%s)\b' % self.startOfSlideCues[i], self.unmatchedFinals+transcript, re.I):
+                # if self.startOfSlideCues[i]!=" " and re.search(r'\b(%s)\b' % self.startOfSlideCues[i], self.unmatchedFinals+transcript, re.I):
                 self.goToSlide(i)
                 return True
 
         return False
 
-    def  goToSlide(self, slide):
-        difference = self.currentSlide-slide
-        if difference==0:
+    def goToSlide(self, slide):
+        difference = self.currentSlide - slide
+        if difference == 0:
             return
-        command = "previous slide" if difference>0 else "next slide"
+        command = "previous slide" if difference > 0 else "next slide"
         for i in range(abs(difference)):
             self.callCommand(command)
-
 
     def listen_print_loop(self, responses):
         """Iterates through server responses and prints them.
@@ -131,21 +127,20 @@ class Processor:
             # overwrite_chars = ' ' * (num_chars_printed - len(transcript))
 
             if result.is_final:
-                if keeplooking: #haven't found a command yet
+                if keeplooking:  # haven't found a command yet
                     keeplooking = not self.parseForCue(transcript)
-                    if not keeplooking: #found a command
-                        self.unmatchedFinals=""
-                if keeplooking: self.unmatchedFinals+=transcript #if we still haven't found a command, add to unmatched
-                keeplooking=True
+                    if not keeplooking:  # found a command
+                        self.unmatchedFinals = ""
+                if keeplooking: self.unmatchedFinals += transcript  # if we still haven't found a command, add to unmatched
+                keeplooking = True
 
             elif keeplooking:
-                keeplooking = not self.parseForCue(transcript) # if something not found, keeplooking
+                keeplooking = not self.parseForCue(transcript)  # if something not found, keeplooking
                 if not keeplooking:
-                    self.unmatchedFinals=""
+                    self.unmatchedFinals = ""
             if self.BREAK: break
 
-
-                # num_chars_printed = 0
+            # num_chars_printed = 0
 
     def setStartAndEndCues(self):
         for element in self.textOfPPT:
@@ -158,12 +153,10 @@ class Processor:
         listTranscript = transcript.split(" ")
         count = 0
         for i, j in zip(listOfEndCues, listTranscript):
-            if i == j: count+=1
-        return (count>=len(endCues)*0.7)
+            if i == j: count += 1
+        return (count >= len(endCues) * 0.7)
 
     def unPunctuatedAndLower(self, str):
         exclude = set(string.punctuation)
         s = "".join(ch.lower() for ch in str if ch not in exclude)
         return s
-
-

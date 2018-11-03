@@ -4,14 +4,16 @@ import os
 import glob
 import re
 
-#only function you should call
-#parameter file- string of the file name
-#returns list of strings where list[0] is all the text on slide 1
+
+# only function you should call
+# parameter file- string of the file name
+# returns list of strings where list[0] is all the text on slide 1
 def parsePPTX(file):
     setup(file)
     temp = parseXML()
     cleanup(file)
     return temp
+
 
 # Sets up the powerpoint to be parsed by copying the file and making it a .zip
 # Parameter file- string of file name
@@ -39,6 +41,7 @@ def parseXML():
         text.append(t)
     return text
 
+
 # deletes temp files
 def cleanup(file):
     os.remove(os.path.splitext(file)[0] + ".zip")
@@ -51,9 +54,10 @@ def cleanup(file):
     shutil.rmtree("_rels")
     os.remove("[Content_Types].xml")
 
-#function credit to this stack overflow thread for the algo
+
+# function credit to this stack overflow thread for the algo
 # https://stackoverflow.com/questions/4836710/does-python-have-a-built-in-function-for-string-natural-sort
 def natural_sort(l):
     convert = lambda text: int(text) if text.isdigit() else text.lower()
-    alphanum_key = lambda key: [ convert(c) for c in re.split('([0-9]+)', key) ]
-    return sorted(l, key = alphanum_key)
+    alphanum_key = lambda key: [convert(c) for c in re.split('([0-9]+)', key)]
+    return sorted(l, key=alphanum_key)
