@@ -14,7 +14,7 @@ class Processor:
     commands = {"exit": "", "next slide":"right", "previous slide":"left"}
     def __init__(self, responses, powerpoint):
         self.responses=responses
-        # textOfPPT=Powerpoint2Text.parsePPTX(powerpoint)
+        textOfPPT=Powerpoint2Text.parsePPTX(powerpoint)
         # self.numberSlides=len(textOfPPT)
         self.numberSlides=4
         self.currentSlide=0
@@ -123,14 +123,14 @@ class Processor:
                 if keeplooking: #haven't found a command yet
                     keeplooking = not self.parseForCue(transcript)
                     if not keeplooking: #found a command
-                        unmatchedFinals=""
-                if keeplooking: unmatchedFinals+=transcript #if we still haven't found a command, add to unmatched
+                        self.unmatchedFinals=""
+                if keeplooking: self.unmatchedFinals+=transcript #if we still haven't found a command, add to unmatched
                 keeplooking=True
 
             elif keeplooking:
                 keeplooking = not self.parseForCue(transcript) # if something not found, keeplooking
                 if not keeplooking:
-                    unmatchedFinals=""
+                    self.unmatchedFinals=""
 
             if self.BREAK: break
 

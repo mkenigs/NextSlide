@@ -134,5 +134,5 @@ def main(powerpoint):
 
 
 if __name__ == '__main__':
-    main("blank")
+    main("../Computer Crimes.pptx")
 # [END speech_transcribe_streaming_mic]

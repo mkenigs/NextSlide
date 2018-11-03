@@ -37,13 +37,16 @@ def parseXML():
         temp = re.findall('<a:t>(.*?)</a:t>', content)
         t = " ".join(temp)
         text.append(t)
-    print(text)
 
 # deletes temp files
 def cleanup(file):
     os.remove(os.path.splitext(file)[0] + ".zip")
     shutil.rmtree("ppt")
-    shutil.rmtree("docProps")
+    try:
+        shutil.rmtree("docProps")
+    except:
+        pass
+
     shutil.rmtree("_rels")
     os.remove("[Content_Types].xml")
 
