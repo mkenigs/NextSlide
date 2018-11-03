@@ -19,16 +19,22 @@ numberSlides=4
 unmatchedFinals = ""
 BREAK = False
 
-def weighter(input):
-    documents = input
+
+
+def weighter(currentPowerPointContent, stringOfWordsSaid):
+    if type(stringOfWordsSaid) is str: stringOfWordsSaid = [stringOfWordsSaid]
+    documents = [currentPowerPointContent]
+    for strs in stringOfWordsSaid:
+        documents.append(strs)
+
 
     #vectorizer fits our powerpoint / document
     tfidf_vectorizer = TfidfVectorizer()
     tfidf_matrix = tfidf_vectorizer.fit_transform(documents)
 
     #gives matrix of simlarity
-    cosine_similarity(tfidf_matrix[0:1], tfidf_matrix)
-
+    similarityResult = cosine_similarity(tfidf_matrix[0:1], tfidf_matrix)[0]
+    return (sum(similarityResult)-1)/(len(similarityResult)-1)
 
 
 
