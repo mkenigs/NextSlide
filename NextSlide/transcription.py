@@ -106,33 +106,37 @@ class MicrophoneStream(object):
             yield b''.join(data)
 
 
+class Transcriber:
+    def __init__(self, powerpoint):
+        self.myProcessor = processing.Processor(powerpoint)
 
-def main(powerpoint):
-    # See http://g.co/cloud/speech/docs/languages
-    # for a list of supported languages.
-    language_code = 'en-US'  # a BCP-47 language tag
+    def start(self):
+        # See http://g.co/cloud/speech/docs/languages
+        # for a list of supported languages.
+        language_code = 'en-US'  # a BCP-47 language tag
 
-    client = speech.SpeechClient()
-    config = types.RecognitionConfig(
-        encoding=enums.RecognitionConfig.AudioEncoding.LINEAR16,
-        sample_rate_hertz=RATE,
-        language_code=language_code)
-    streaming_config = types.StreamingRecognitionConfig(
-        config=config,
-        interim_results=True)
+        client = speech.SpeechClient()
+        config = types.RecognitionConfig(
+            encoding=enums.RecognitionConfig.AudioEncoding.LINEAR16,
+            sample_rate_hertz=RATE,
+            language_code=language_code)
+        streaming_config = types.StreamingRecognitionConfig(
+            config=config,
+            interim_results=True)
 
-    with MicrophoneStream(RATE, CHUNK) as stream:
-        audio_generator = stream.generator()
-        requests = (types.StreamingRecognizeRequest(audio_content=content)
-                    for content in audio_generator)
+        with MicrophoneStream(RATE, CHUNK) as stream:
+            audio_generator = stream.generator()
+            requests = (types.StreamingRecognizeRequest(audio_content=content)
+                        for content in audio_generator)
 
-        responses = client.streaming_recognize(streaming_config, requests)
+            responses = client.streaming_recognize(streaming_config, requests)
 
-        # Now, put the transcription responses to use.
-        myProcessor = processing.Processor(responses, powerpoint)
-        myProcessor.listen_print_loop()
-
+            # Now, put the transcription responses to use.
+            self.myProcessor.listen_print_loop(responses)
+    def stop(self):
+        self.myProcessor.BREAK=True
 
 if __name__ == '__main__':
-    main("../Computer Crimes.pptx")
+    myTranscriber = Transcriber("../Computer Crimes.pptx")
+    myTranscriber.start()
 # [END speech_transcribe_streaming_mic]

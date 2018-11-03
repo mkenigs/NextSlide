@@ -13,8 +13,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 
 class Processor:
     commands = {"exit": "", "next slide":"right", "previous slide":"left"}
-    def __init__(self, responses, powerpoint):
-        self.responses=responses
+    def __init__(self, powerpoint):
         self.textOfPPT=Powerpoint2Text.parsePPTX(powerpoint)
         print(self.textOfPPT)
         self.numberSlides=len(self.textOfPPT)
@@ -95,7 +94,7 @@ class Processor:
             self.callCommand(command)
 
 
-    def listen_print_loop(self):
+    def listen_print_loop(self, responses):
         """Iterates through server responses and prints them.
         The responses passed is a generator that will block until a response
         is provided by the server.
@@ -110,7 +109,7 @@ class Processor:
         # num_chars_printed = 0
 
         keeplooking = True
-        for response in self.responses:
+        for response in responses:
             if not response.results:
                 continue
 
