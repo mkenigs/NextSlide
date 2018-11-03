@@ -9,8 +9,14 @@ endOfSlideCues = ["end of first", "second end second"]
 
 currentSlide=1
 
+def loadOfSlideCues(input):
+    for slide in input:
+        endOfSlideCues.append(slide[:-5])
+
+
 def callCommand(command):
     pyautogui.typewrite(commands[command])
+    ++currentSlide
 
 def parseForCue(transcript):
     for cue in commands:
