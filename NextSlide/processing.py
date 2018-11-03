@@ -10,7 +10,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.metrics.pairwise import cosine_similarity
 
 commands = {"exit": "", "next slide":"right", "previous slide":"left"}
-endOfSlideCues = ["end of first", "second end second", "", ""]
+endOfSlideCues = ["end of first", "second end second", "end of third third", "fourth end fourth"]
 startOfSlideCues = ["the beginning", "start of second", "start of third", "start of fourth"]
 
 currentSlide=0
