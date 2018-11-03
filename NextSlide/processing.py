@@ -2,25 +2,27 @@ import transcription
 import itertools
 import re
 import sys
+import pyautogui
 
-voiceCommands = ["next slide", "previous slide"]
+commands = {"exit": "", "next slide":"right", "previous slide":"left"}
 endOfSlideCues = ["end of first", "second end second"]
 
 currentSlide=1
 
-def callCommand:
-    pass
+def callCommand(command):
+    pyautogui.typewrite(commands[command])
 
 def parseForCue(transcript):
-    for cue in voiceCommands:
+    for cue in commands:
         if re.search(r'\b(%s)\b' % (cue), transcript, re.I):
-            callCommand(cue)
             if cue == "exit":
                 return True
-            else:
-                return False
+            callCommand(cue)
+
+        else:
+            return False
     if re.search(r'\b(%s)\b' % (endOfSlideCues[currentSlide]), transcript, re.I):
-        callCommand("next slide")
+        callCommand("next slide") # should be in commands
     return False
 
 
