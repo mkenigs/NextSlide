@@ -156,10 +156,7 @@ class Processor:
     def similar(endCues, transcript):
         listOfEndCues = [w for w in re.split('\W', endCues) if w]
         listTranscript = transcript.split(" ")
-        listOfEndCues.sort()
-        listTranscript.sort()
         count = 0
         for i, j in zip(listOfEndCues, listTranscript):
-            if i == j: ++count
-
-        return (count / len(listOfEndCues) > 0.70)
+            if i == j: count+=1
+        return (count>=len(endCues)*0.7)
