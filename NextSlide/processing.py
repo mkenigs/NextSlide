@@ -152,3 +152,14 @@ class Processor:
             space = " "
             self.startOfSlideCues.append(space.join(element.split(" ")[:4]))
             self.endOfSlideCues.append(space.join(element.split(" ")[-4:]))
+
+    def similar(endCues, transcript):
+        listOfEndCues = [w for w in re.split('\W', endCues) if w]
+        listTranscript = transcript.split(" ")
+        listOfEndCues.sort()
+        listTranscript.sort()
+        count = 0
+        for i, j in zip(listOfEndCues, listTranscript):
+            if i == j: ++count
+
+        return (count / len(listOfEndCues) > 0.70)

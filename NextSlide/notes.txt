@@ -1,0 +1,1 @@
+explicit commmands: next, previous, end, exit, etc.
