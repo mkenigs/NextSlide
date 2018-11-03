@@ -24,7 +24,7 @@ def setup(file):
 
 
 # locates the strings within a powerpoint
-# returns - void
+# returns - list of strings
 def parseXML():
     files = glob.glob('./ppt/slides/*.xml')
     files = natural_sort(files)
@@ -37,6 +37,7 @@ def parseXML():
         temp = re.findall('<a:t>(.*?)</a:t>', content)
         t = " ".join(temp)
         text.append(t)
+    return text
 
 # deletes temp files
 def cleanup(file):

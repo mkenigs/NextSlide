@@ -15,6 +15,7 @@ class Processor:
     def __init__(self, responses, powerpoint):
         self.responses=responses
         textOfPPT=Powerpoint2Text.parsePPTX(powerpoint)
+        print(textOfPPT)
         # self.numberSlides=len(textOfPPT)
         self.numberSlides=4
         self.currentSlide=0
