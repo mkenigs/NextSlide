@@ -69,12 +69,17 @@ class Processor:
                 self.callCommand(cue)
                 return True #only want to run one command
 
-        if re.search(r'\b(%s)\b' % (self.endOfSlideCues[self.currentSlide]), self.unmatchedFinals+transcript, re.I):
+        space = " "
+        lastFour=space.join((self.unmatchedFinals+transcript).split(" ")[:4])
+
+        if self.similar(self.endOfSlideCues[self.currentSlide], lastFour):
+        # if re.search(r'\b(%s)\b' % (self.endOfSlideCues[self.currentSlide]), self.unmatchedFinals+transcript, re.I):
             self.callCommand("next slide") # should be in commands
             return True
 
-        for i in range(len(self.startOfSlideCues)):
-            if self.startOfSlideCues[i]!=" " and re.search(r'\b(%s)\b' % self.startOfSlideCues[i], self.unmatchedFinals+transcript, re.I):
+        for i in range(len(self.startOfSlideCues)): #todo edge cases
+            if self.similar(self.startOfSlideCues[i], lastFour):
+            # if self.startOfSlideCues[i]!=" " and re.search(r'\b(%s)\b' % self.startOfSlideCues[i], self.unmatchedFinals+transcript, re.I):
                 self.goToSlide(i)
                 return True
 
@@ -137,7 +142,6 @@ class Processor:
                 keeplooking = not self.parseForCue(transcript) # if something not found, keeplooking
                 if not keeplooking:
                     self.unmatchedFinals=""
-
             if self.BREAK: break
 
 
@@ -146,5 +150,5 @@ class Processor:
     def setStartAndEndCues(self):
         for element in self.textOfPPT:
             space = " "
-            self.startOfSlideCues.append(space.join(element.split(" ")[:2]))
-            self.endOfSlideCues.append(space.join(element.split(" ")[-2:]))
+            self.startOfSlideCues.append(space.join(element.split(" ")[:4]))
+            self.endOfSlideCues.append(space.join(element.split(" ")[-4:]))
