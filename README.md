@@ -1,9 +1,9 @@
 # Specifications
 
 ## Setup
-Add configuration, script mainwindow.py
-Create new venv and install requirements
-Set environment variable in configuration:
+Add configuration, script mainwindow.py  
+Create new venv and install requirements  
+Set environment variable in configuration:  
 GOOGLE_APPLICATION_CREDENTIALS=
 /path/to/file
 
