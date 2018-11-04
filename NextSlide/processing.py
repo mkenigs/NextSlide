@@ -144,8 +144,8 @@ class Processor:
             self.endOfSlideCues.append(space.join(element.split(" ")[-4:]))
 
     def similar(self, endCues, transcript):
-        listOfEndCues = [w for w in re.split('\W', endCues) if w]
-        listTranscript = transcript.split(" ")
+        listOfEndCues = [w for w in re.split('\W', self.unPunctuatedAndLower(endCues)) if w]
+        listTranscript = self.unPunctuatedAndLower(transcript).split(" ")
         count = 0
         for i, j in zip(listOfEndCues, listTranscript):
             if i == j: count += 1
