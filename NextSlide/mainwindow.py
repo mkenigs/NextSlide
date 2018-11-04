@@ -1,6 +1,7 @@
 from tkinter import *
 from tkinter.filedialog import askopenfilename
 import transcription
+import threading
 
 def read(input):
     text = input
@@ -9,19 +10,19 @@ class MainWindow():
     def __init__(self, master):
         self.master = master
         self.master.title('NextSlide')
-        self.master.geometry('200x160')
+        self.master.geometry('400x320')
         self.master.resizable(0, 0)
 
         self.text1 = Label(text='Press play to start')
-        self.text1.pack(padx=10, pady=10)
+        self.text1.pack(padx=20, pady=20)
 
         self.start = PhotoImage(file='Play.png')
         self.pause = PhotoImage(file='Pause.png')
-        self.play = Button(image=self.start, height=50, width=50, command=self.run)
-        self.play.pack(padx=10, pady=10)
+        self.play = Button(image=self.start, height=100, width=100, command=self.run)
+        self.play.pack(padx=20, pady=20)
 
-        self.pickFile = Button(text='Please select a file', height=50, width=50, command=self.getFile)
-        self.pickFile.pack(padx=10, pady=10)
+        self.pickFile = Button(text='Please select a file', height=100, width=100, command=self.getFile)
+        self.pickFile.pack(padx=20, pady=20)
 
         self.myTranscriber = None
 
@@ -32,7 +33,7 @@ class MainWindow():
         else:
             self.text1['text'] = 'Listening'
             self.play['image'] = self.pause
-            self.myTranscriber.start()
+            threading.Thread(target=self.myTranscriber.start).start()
 
 
     def stopListening(self):
