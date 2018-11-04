@@ -1,17 +1,32 @@
 from tkinter import *
 from tkinter.filedialog import askopenfilename
-
+from transcription import Transcriber
 
 def read(input):
     text = input
 
 
 def startListening():
-    play['image'] = pause
+    if not play['text']:
+        text1['text'] = 'Please select a file first'
+    else:
+        text1['text'] = 'Listening'
+        play['image'] = pause
+        myTranscriber.start()
+        if myTranscriber:
+            print(1)
+        else:
+            print(0)
 
 
 def stopListening():
     play['image'] = start
+    text1['text'] = 'Press play to start'
+    myTranscriber.stop()
+    if myTranscriber:
+        print(1)
+    else:
+        print(0)
 
 
 def run():
@@ -19,16 +34,17 @@ def run():
         startListening()
     else:
         stopListening()
-        text1['text'] = 'Press play to start'
 
 
 def getFile():
-    filename = askopenfilename()
-    if filename:
-        pickFile['text'] = filename[filename.rfind('/') + 1:]
+    play['text'] = askopenfilename()
+    global myTranscriber
+    if play['text']:
+        pickFile['text'] = play['text'][play['text'].rfind('/') + 1:]
         stopListening()
-        print('hello world this is a \n test')
-        print("hello world this is another \n test")
+        myTranscriber = Transcriber(play['text'])
+    else:
+        myTranscriber = None
 
 
 master = Tk()

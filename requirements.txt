@@ -5,3 +5,5 @@ SpeechRecognition
 pyautogui
 Xlib
 sklearn
+pyobjc-core
+pyobjc
