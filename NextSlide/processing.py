@@ -62,7 +62,7 @@ class Processor:
                 return True  # only want to run one command
 
         space = " "
-        lastFour = space.join((self.unmatchedFinals + transcript).split(" ")[-1:])
+        lastFour = space.join((self.unmatchedFinals + transcript).split(" ")[-4:])
 
         if self.similar(self.endOfSlideCues[self.currentSlide], lastFour):
             # if re.search(r'\b(%s)\b' % (self.endOfSlideCues[self.currentSlide]), self.unmatchedFinals+transcript, re.I):
@@ -144,14 +144,13 @@ class Processor:
             self.endOfSlideCues.append(space.join(element.split(" ")[-4:]))
 
     def similar(self, endCues, transcript):
-        print("cue: %s | transcript: %s" % (self.unPunctuatedAndLower(endCues), self.unPunctuatedAndLower(transcript)) )
+        # print("cue: %s | transcript: %s" % (self.unPunctuatedAndLower(endCues), self.unPunctuatedAndLower(transcript)) )
         listOfEndCues = [w for w in re.split('\W', self.unPunctuatedAndLower(endCues)) if w]
         listTranscript = self.unPunctuatedAndLower(transcript).split(" ")
         count = 0
         for i, j in zip(listOfEndCues, listTranscript):
             if i == j: count += 1
-        print(count)
-        return (count >= len(endCues) * 0.7)
+        return (count >= len(listOfEndCues) * 0.7)
 
     def unPunctuatedAndLower(self, str):
         exclude = set(string.punctuation)
