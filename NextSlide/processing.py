@@ -1,7 +1,4 @@
-import transcription
-import itertools
 import re
-import sys
 import pyautogui
 import Powerpoint2Text
 import string
